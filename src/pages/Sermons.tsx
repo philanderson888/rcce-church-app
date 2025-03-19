@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
 
 interface YouTubeVideo {
-  id: { videoId: string };
   snippet: {
     publishedAt: string;
     title: string;
@@ -14,6 +13,9 @@ interface YouTubeVideo {
         height: number;
       };
     };
+    resourceId: {
+      videoId: string;
+    };
   };
 }
 
@@ -23,20 +25,43 @@ function Sermons() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
 
   useEffect(() => {
-    const fetchVideos = async () => {
+    const fetchChannelVideos = async () => {
       try {
         const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&order=date&key=${apiKey}`
+        const channelId = 'UCsQLfjesONWETmed0386WqA';
+        
+        // Get the channel's uploads playlist ID
+        const channelResponse = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
         );
 
-        if (!response.ok) {
-          const error = await response.json();
+        if (!channelResponse.ok) {
+          const error = await channelResponse.json();
           throw new Error(error.error.message);
         }
 
-        const data = await response.json();
-        console.log('Recent YouTube Videos:', data);
+        const channelData = await channelResponse.json();
+        console.log('Channel Data:', channelData);
+
+        if (!channelData.items || channelData.items.length === 0) {
+          throw new Error('Channel not found');
+        }
+
+        // Get the uploads playlist ID from the channel
+        const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+        // Now fetch the actual videos from the uploads playlist
+        const videosResponse = await fetch(
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId=${uploadsPlaylistId}&key=${apiKey}`
+        );
+
+        if (!videosResponse.ok) {
+          const error = await videosResponse.json();
+          throw new Error(error.error.message);
+        }
+
+        const data = await videosResponse.json();
+        console.log('Channel Videos:', data);
         setVideos(data.items);
         setApiStatus('success');
       } catch (error) {
@@ -46,7 +71,7 @@ function Sermons() {
       }
     };
 
-    fetchVideos();
+    fetchChannelVideos();
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -83,7 +108,7 @@ function Sermons() {
         {apiStatus === 'success' && (
           <div className="space-y-6">
             {videos.map((video) => (
-              <div key={video.id.videoId} className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div key={video.snippet.resourceId.videoId} className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                   <div className="md:w-64 flex-shrink-0">
                     <img
@@ -103,7 +128,7 @@ function Sermons() {
                       {video.snippet.description}
                     </p>
                     <a
-                      href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
+                      href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
