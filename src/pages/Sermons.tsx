@@ -1,16 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
 
+interface YouTubeVideo {
+  id: { videoId: string };
+  snippet: {
+    publishedAt: string;
+    title: string;
+    description: string;
+    thumbnails: {
+      medium: {
+        url: string;
+        width: number;
+        height: number;
+      };
+    };
+  };
+}
+
 function Sermons() {
   const [apiStatus, setApiStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
 
   useEffect(() => {
-    const testYouTubeAPI = async () => {
+    const fetchVideos = async () => {
       try {
         const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
         const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&type=video&key=${apiKey}`
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&order=date&key=${apiKey}`
         );
 
         if (!response.ok) {
@@ -19,7 +36,8 @@ function Sermons() {
         }
 
         const data = await response.json();
-        console.log('YouTube API Test Response:', data);
+        console.log('Recent YouTube Videos:', data);
+        setVideos(data.items);
         setApiStatus('success');
       } catch (error) {
         console.error('YouTube API Error:', error);
@@ -28,8 +46,16 @@ function Sermons() {
       }
     };
 
-    testYouTubeAPI();
+    fetchVideos();
   }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,24 +67,55 @@ function Sermons() {
       </header>
       
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">YouTube API Test Status</h2>
-          
-          {apiStatus === 'loading' && (
-            <p className="text-gray-600">Testing YouTube API connection...</p>
-          )}
-          
-          {apiStatus === 'success' && (
-            <p className="text-green-600">✓ YouTube API connection successful! Check the console for the test response.</p>
-          )}
-          
-          {apiStatus === 'error' && (
-            <div className="text-red-600">
-              <p>✗ YouTube API connection failed</p>
-              <p className="mt-2 text-sm">{errorMessage}</p>
-            </div>
-          )}
-        </div>
+        {apiStatus === 'loading' && (
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <p className="text-gray-600">Loading recent sermons...</p>
+          </div>
+        )}
+        
+        {apiStatus === 'error' && (
+          <div className="bg-white rounded-xl shadow-sm p-6 text-red-600">
+            <p>Failed to load sermons</p>
+            <p className="mt-2 text-sm">{errorMessage}</p>
+          </div>
+        )}
+        
+        {apiStatus === 'success' && (
+          <div className="space-y-6">
+            {videos.map((video) => (
+              <div key={video.id.videoId} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-64 flex-shrink-0">
+                    <img
+                      src={video.snippet.thumbnails.medium.url}
+                      alt={video.snippet.title}
+                      className="w-full h-48 md:h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="text-sm text-gray-500 mb-2">
+                      {formatDate(video.snippet.publishedAt)}
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                      {video.snippet.title}
+                    </h2>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {video.snippet.description}
+                    </p>
+                    <a
+                      href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                      Watch on YouTube
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
