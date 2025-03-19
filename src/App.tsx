@@ -2,19 +2,25 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Sermons from './pages/Sermons';
-import Discover from './pages/Discover';
-import Livestream from './pages/Livestream';
+import Connect from './pages/Connect';
+import Events from './pages/Events';
+import Calendar from './pages/Calendar';
 import Giving from './pages/Giving';
+import Contact from './pages/Contact';
+import Livestream from './pages/Livestream';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sermons" element={<Sermons />} />
-        <Route path="/discover" element={<Discover />} />
         <Route path="/livestream" element={<Livestream />} />
+        <Route path="/sermons" element={<Sermons />} />
+        <Route path="/connect" element={<Connect />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/giving" element={<Giving />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );
