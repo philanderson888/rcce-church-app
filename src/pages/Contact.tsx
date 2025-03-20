@@ -1,6 +1,5 @@
-import React from 'react';
-import Navigation from '../components/Navigation';
 import { MapPin, Phone, Mail, Globe } from 'lucide-react';
+import Navigation from '../components/Navigation';
 
 function Contact() {
   return (

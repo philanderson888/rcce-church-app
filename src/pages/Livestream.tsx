@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
 import { Calendar, Play } from 'lucide-react';
 
@@ -120,6 +120,7 @@ function Livestream() {
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  title="Live Church Service"
                 ></iframe>
               </div>
               <div className="mt-4">

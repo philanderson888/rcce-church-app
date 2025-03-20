@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Radio, Users, Calendar as CalendarIcon, Church, Heart, Mail, PartyPopper } from 'lucide-react';
 import Navigation from '../components/Navigation';

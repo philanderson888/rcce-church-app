@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import { Calendar as CalendarIcon, MapPin, Clock, ExternalLink, LayoutGrid, List } from 'lucide-react';
 
@@ -173,6 +173,7 @@ function Calendar() {
               frameBorder="0"
               scrolling="yes"
               style={{ borderWidth: 0 }}
+              title="Church Calendar"
             />
           </div>
         )}

@@ -1,6 +1,5 @@
-import React from 'react';
-import Navigation from '../components/Navigation';
 import { Facebook, Instagram, Youtube, Twitter, Globe } from 'lucide-react';
+import Navigation from '../components/Navigation';
 
 function Connect() {
   const socialLinks = [
