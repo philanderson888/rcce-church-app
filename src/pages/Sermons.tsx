@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navigation from '../components/Navigation';
 
 interface YouTubeVideo {
@@ -30,7 +30,6 @@ function Sermons() {
         const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
         const channelId = 'UCsQLfjesONWETmed0386WqA';
         
-        // Get the channel's uploads playlist ID
         const channelResponse = await fetch(
           `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
         );
@@ -47,10 +46,8 @@ function Sermons() {
           throw new Error('Channel not found');
         }
 
-        // Get the uploads playlist ID from the channel
         const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
 
-        // Now fetch the actual videos from the uploads playlist
         const videosResponse = await fetch(
           `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId=${uploadsPlaylistId}&key=${apiKey}`
         );
@@ -131,7 +128,8 @@ function Sermons() {
                       href={`https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-m
+d shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       Watch on YouTube
                     </a>
