@@ -11,7 +11,12 @@ function Navigation() {
     { title: 'Connect', icon: <Users className="w-6 h-6" />, path: '/connect' },
     { title: 'Events', icon: <PartyPopper className="w-6 h-6" />, path: '/events' },
     { title: 'Calendar', icon: <CalendarIcon className="w-6 h-6" />, path: '/calendar' },
-    { title: 'Giving', icon: <Heart className="w-6 h-6" />, path: '/giving' },
+    { 
+      title: 'Giving', 
+      icon: <Heart className="w-6 h-6" />, 
+      path: 'https://rcce.churchsuite.com/donate',
+      external: true 
+    },
     { title: 'Contact', icon: <Mail className="w-6 h-6" />, path: '/contact' },
   ];
 
@@ -25,34 +30,59 @@ function Navigation() {
           
           <div className="hidden lg:flex space-x-6">
             {menuItems.map((item) => (
-              <Link
-                key={item.title}
-                to={item.path}
-                className={`flex items-center space-x-2 text-sm font-medium ${
-                  location.pathname === item.path
-                    ? 'text-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span>{item.icon}</span>
-                <span>{item.title}</span>
-              </Link>
+              item.external ? (
+                <a
+                  key={item.title}
+                  href={item.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+                >
+                  <span>{item.icon}</span>
+                  <span>{item.title}</span>
+                </a>
+              ) : (
+                <Link
+                  key={item.title}
+                  to={item.path}
+                  className={`flex items-center space-x-2 text-sm font-medium ${
+                    location.pathname === item.path
+                      ? 'text-gray-900'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <span>{item.icon}</span>
+                  <span>{item.title}</span>
+                </Link>
+              )
             ))}
           </div>
           
           <div className="lg:hidden flex space-x-4">
             {menuItems.map((item) => (
-              <Link
-                key={item.title}
-                to={item.path}
-                className={`${
-                  location.pathname === item.path
-                    ? 'text-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                {item.icon}
-              </Link>
+              item.external ? (
+                <a
+                  key={item.title}
+                  href={item.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  {item.icon}
+                </a>
+              ) : (
+                <Link
+                  key={item.title}
+                  to={item.path}
+                  className={`${
+                    location.pathname === item.path
+                      ? 'text-gray-900'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {item.icon}
+                </Link>
+              )
             ))}
           </div>
         </div>
