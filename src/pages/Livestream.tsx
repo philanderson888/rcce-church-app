@@ -12,7 +12,6 @@ function Livestream() {
   const [error, setError] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<LiveStreamStatus>({ isLive: false });
   
-  // Get next Sunday at 11am
   const getNextSunday = () => {
     const now = new Date();
     const nextSunday = new Date(now);
@@ -29,37 +28,47 @@ function Livestream() {
   const checkLiveStream = async () => {
     try {
       const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
-      const channelId = 'UCsQLfjesONWETmed0386WqA';
       
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`
-      );
+      if (!apiKey) {
+        throw new Error('YouTube API key is not configured');
+      }
 
+      const channelId = 'UCsQLfjesONWETmed0386WqA';
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`;
+      
+      console.log('Checking livestream status...');
+      const response = await fetch(url);
+      
       if (!response.ok) {
-        throw new Error('Failed to check livestream status');
+        const errorData = await response.json();
+        console.error('YouTube API Error:', errorData);
+        throw new Error(errorData.error?.message || 'Failed to check livestream status');
       }
 
       const data = await response.json();
+      console.log('Livestream response:', data);
+      
       const isLive = data.items && data.items.length > 0;
+      if (isLive) {
+        console.log('Found live stream:', data.items[0]);
+      }
+      
       setLiveStatus({
         isLive,
         videoId: isLive ? data.items[0].id.videoId : undefined
       });
+      setError(null);
       setIsLoading(false);
     } catch (err) {
       console.error('Error checking livestream:', err);
-      setError('Failed to check livestream status');
+      setError(err instanceof Error ? err.message : 'Failed to check livestream status');
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Initial check
     checkLiveStream();
-
-    // Set up polling every 10 seconds
-    const interval = setInterval(checkLiveStream, 10000);
-
+    const interval = setInterval(checkLiveStream, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -92,7 +101,15 @@ function Livestream() {
           </div>
         ) : error ? (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <p className="text-red-600">{error}</p>
+            <div className="text-center py-12">
+              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Next Live Service</h2>
+              <p className="text-gray-600 mb-6">
+                Join us for our next Sunday service on {formatDate(nextSunday)}
+              </p>
+              <p className="text-red-600 text-sm mb-2">Error checking livestream status</p>
+              <p className="text-gray-500 text-sm">{error}</p>
+            </div>
           </div>
         ) : liveStatus.isLive ? (
           <div className="space-y-4">
