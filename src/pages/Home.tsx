@@ -10,7 +10,12 @@ function Home() {
     { title: 'Connect', icon: <Users className="w-8 h-8" />, path: '/connect' },
     { title: 'Events', icon: <PartyPopper className="w-8 h-8" />, path: '/events' },
     { title: 'Calendar', icon: <CalendarIcon className="w-8 h-8" />, path: '/calendar' },
-    { title: 'Giving', icon: <Heart className="w-8 h-8" />, path: '/giving' },
+    { 
+      title: 'Giving', 
+      icon: <Heart className="w-8 h-8" />, 
+      path: 'https://rcce.churchsuite.com/donate',
+      external: true 
+    },
     { title: 'Contact', icon: <Mail className="w-8 h-8" />, path: '/contact' },
   ];
 
@@ -26,14 +31,27 @@ function Home() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {menuItems.map((item) => (
-            <Link
-              key={item.title}
-              to={item.path}
-              className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="text-gray-600">{item.icon}</div>
-              <span className="mt-4 text-lg font-medium text-gray-900">{item.title}</span>
-            </Link>
+            item.external ? (
+              <a
+                key={item.title}
+                href={item.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="text-gray-600">{item.icon}</div>
+                <span className="mt-4 text-lg font-medium text-gray-900">{item.title}</span>
+              </a>
+            ) : (
+              <Link
+                key={item.title}
+                to={item.path}
+                className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="text-gray-600">{item.icon}</div>
+                <span className="mt-4 text-lg font-medium text-gray-900">{item.title}</span>
+              </Link>
+            )
           ))}
         </div>
       </main>
