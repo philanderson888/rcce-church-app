@@ -1,23 +1,22 @@
 # RCCE Church App
 
-Version: 1.0.0  
-Date: March 11, 2024  
-Authors: 
-- Phil Anderson (Project Lead)
-- Bolt (Technical Implementation)
-
-## Overview
-
 A demo application for Revival Christian Church of Enfield (RCCE) showcasing core features for a potential mobile app. This web application serves as a prototype to demonstrate key functionality and user experience.
+
+**Version**: 1.0.0  
+**Date**: March 2025  
+**Authors**:  
+- Phil Anderson (Project Lead)
+- Bolt (Lead Developer)
+- RCCE Development Team
 
 ## Features
 
 ### 1. Live Streaming
 - Real-time church service streaming integration
-- YouTube Live API integration
-- Automatic stream detection
+- YouTube Live API integration with automatic status polling
 - Fallback to next service time when offline
 - Service schedule display
+- Error handling and status notifications
 
 ### 2. Sermon Archive
 - YouTube API integration for historical sermons
@@ -27,25 +26,24 @@ A demo application for Revival Christian Church of Enfield (RCCE) showcasing cor
 - Responsive video grid layout
 
 ### 3. Calendar System
-- Dual implementation:
-  - JSON API integration for custom styling
-  - Embedded ChurchSuite calendar
+- ChurchSuite calendar integration
 - Event details and descriptions
 - Date and time formatting
 - Location information
+- Grid and list view options
 
 ### 4. Events
 - ChurchSuite events integration
 - Embedded calendar view
 - Event registration capability
-- Event categorization
-- Search functionality
+- Responsive layout
+- Seamless integration with church management system
 
 ### 5. Social Media Integration
 - Comprehensive social media links
 - Platform-specific icons
 - External links to:
-  - Website
+  - Website (rccenfield.org)
   - Facebook
   - Instagram
   - YouTube
@@ -54,7 +52,7 @@ A demo application for Revival Christian Church of Enfield (RCCE) showcasing cor
 ### 6. Contact Information
 - Church location details
 - Service times
-- Contact methods
+- Contact methods (phone, email)
 - Interactive links
 - Responsive layout
 
@@ -63,51 +61,9 @@ A demo application for Revival Christian Church of Enfield (RCCE) showcasing cor
 - Mobile-friendly design
 - Icon-based navigation
 - Active page highlighting
+- External link handling
 
-## Technical Guide
-
-### API Integrations
-
-1. **YouTube Data API v3**
-   - Endpoints:
-     - `/youtube/v3/search`: Live stream detection
-     - `/youtube/v3/playlistItems`: Sermon archive
-   - Features:
-     - Live stream status checking (30-second polling)
-     - Video playlist retrieval
-     - Thumbnail and metadata fetching
-
-2. **ChurchSuite API**
-   - Calendar JSON API: `https://philanderson888.churchsuite.com/-/calendar/[calendar-id]/json`
-   - Features:
-     - Event data retrieval
-     - Location information
-     - Event details and timing
-
-### Embedded Services
-
-1. **ChurchSuite Calendar**
-   - Implementation: iFrame integration
-   - Source: `https://rcce.churchsuite.com/embed/calendar/`
-   - Features:
-     - Interactive calendar view
-     - Event registration
-     - Search and filtering
-
-2. **ChurchSuite Events**
-   - Implementation: iFrame integration
-   - Source: `https://rcce.churchsuite.com/embed/calendar/events`
-   - Features:
-     - Event listing
-     - Category filtering
-     - Sign-up integration
-
-### Environment Variables
-
-Required environment variables:
-- `VITE_YOUTUBE_API_KEY`: YouTube Data API key for video and live stream integration
-
-### Technology Stack
+## Technical Stack
 
 - **Frontend Framework**: React 18.3.1
 - **Language**: TypeScript
@@ -121,6 +77,13 @@ Required environment variables:
   - PostCSS
   - Autoprefixer
 
+## Environment Variables
+
+Required environment variables:
+```
+VITE_YOUTUBE_API_KEY=your_youtube_api_key
+```
+
 ## Development
 
 1. Install dependencies:
@@ -128,21 +91,39 @@ Required environment variables:
 npm install
 ```
 
-2. Set up environment variables:
-Create a `.env` file with:
-```
-VITE_YOUTUBE_API_KEY=your_youtube_api_key
-```
-
-3. Start development server:
+2. Start development server:
 ```bash
 npm run dev
 ```
 
-4. Build for production:
+3. Build for production:
 ```bash
 npm run build
 ```
+
+4. Preview production build:
+```bash
+npm run preview
+```
+
+## API Integrations
+
+### YouTube Data API v3
+- Live stream detection
+- Video playlist retrieval
+- Thumbnail and metadata fetching
+- Error handling and status reporting
+
+### ChurchSuite Integration
+- Calendar and events system
+- Donation handling
+- Event registration
+
+## Browser Support
+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design for mobile and desktop
+- Progressive enhancement
 
 ## License
 
