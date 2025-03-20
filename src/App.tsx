@@ -5,7 +5,6 @@ import Sermons from './pages/Sermons';
 import Connect from './pages/Connect';
 import Events from './pages/Events';
 import Calendar from './pages/Calendar';
-import Giving from './pages/Giving';
 import Contact from './pages/Contact';
 import Livestream from './pages/Livestream';
 
@@ -19,7 +18,6 @@ function App() {
         <Route path="/connect" element={<Connect />} />
         <Route path="/events" element={<Events />} />
         <Route path="/calendar" element={<Calendar />} />
-        <Route path="/giving" element={<Giving />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
