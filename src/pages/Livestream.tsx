@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import { Calendar, Play } from 'lucide-react';
+import { YOUTUBE_CONFIG } from '../config/youtube';
 
 interface LiveStreamStatus {
   isLive: boolean;
@@ -11,19 +13,6 @@ function Livestream() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<LiveStreamStatus>({ isLive: false });
-  
-  const getNextSunday = () => {
-    const now = new Date();
-    const nextSunday = new Date(now);
-    nextSunday.setDate(now.getDate() + ((7 - now.getDay()) % 7));
-    nextSunday.setHours(11, 0, 0, 0);
-    return nextSunday;
-  };
-
-  const isSundayServiceTime = () => {
-    const now = new Date();
-    return now.getDay() === 0 && now.getHours() >= 11 && now.getHours() < 14;
-  };
 
   const checkLiveStream = async () => {
     try {
@@ -33,7 +22,7 @@ function Livestream() {
         throw new Error('YouTube API key is not configured');
       }
 
-      const channelId = 'UCsQLfjesONWETmed0386WqA';
+      const channelId = YOUTUBE_CONFIG.channelId;
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`;
       
       console.log('Checking livestream status...');
@@ -72,19 +61,6 @@ function Livestream() {
     return () => clearInterval(interval);
   }, []);
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric'
-    });
-  };
-
-  const nextSunday = getNextSunday();
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -103,9 +79,10 @@ function Livestream() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="text-center py-12">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Next Live Service</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">No Live Stream Available</h2>
               <p className="text-gray-600 mb-6">
-                Join us for our next Sunday service on {formatDate(nextSunday)}
+                Please check our <Link to="/calendar" className="text-blue-600 hover:text-blue-800 font-medium">calendar</Link> and{' '}
+                <Link to="/events" className="text-blue-600 hover:text-blue-800 font-medium">events</Link> pages for upcoming services and church meetings.
               </p>
               <p className="text-red-600 text-sm mb-2">Error checking livestream status</p>
               <p className="text-gray-500 text-sm">{error}</p>
@@ -131,23 +108,15 @@ function Livestream() {
               </div>
             </div>
           </div>
-        ) : isSundayServiceTime() ? (
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="text-center py-12">
-              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Service Not Live Yet</h2>
-              <p className="text-gray-600">
-                Our Sunday service will begin shortly. Please check back in a few minutes.
-              </p>
-            </div>
-          </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="text-center py-12">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Next Live Service</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">No Live Stream Available</h2>
               <p className="text-gray-600 mb-6">
-                Join us for our next Sunday service on {formatDate(nextSunday)}
+                There is no live stream at present. Please check our{' '}
+                <Link to="/calendar" className="text-blue-600 hover:text-blue-800 font-medium">calendar</Link> and{' '}
+                <Link to="/events" className="text-blue-600 hover:text-blue-800 font-medium">events</Link> pages for upcoming services and church meetings.
               </p>
               <div className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-not-allowed">
                 <Play className="w-5 h-5 mr-2" />
